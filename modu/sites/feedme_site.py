@@ -15,7 +15,7 @@ from modu.web import app, static
 from modu.editable import resource
 from modu.editable.datatypes import fck
 
-from feedme.resource import index
+from feedme.resource import index, feeds
 
 class Site(object):
 	classProvides(plugin.IPlugin, app.ISite)
@@ -36,4 +36,6 @@ class Site(object):
 		application.activate('/admin', resource.AdminResource, default_path='admin/listing/page', itemdef_module=feedme.itemdefs)
 		
 		application.activate('/fck', fck.FCKEditorResource)
+
 		application.activate('/', index.Resource)
+		application.activate('/feeds', feeds.Resource)
