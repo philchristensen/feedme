@@ -1,0 +1,39 @@
+# feedme
+# Copyright (C) 2010 Phil Christensen <phil@bubblehouse.org>
+#
+# $Id$
+#
+
+import os.path
+import pkg_resources as pkg
+
+from zope.interface import classProvides
+
+from twisted import plugin
+
+from modu.web import app, static
+from modu.editable import resource
+from modu.editable.datatypes import fck
+
+from feedme.resource import index
+
+class Site(object):
+	classProvides(plugin.IPlugin, app.ISite)
+	
+	def initialize(self, application):
+		application.base_domain = 'localhost'
+		application.db_url = 'MySQLdb://feedme:jufGhosh@localhost/feedme'
+		application.template_dir = 'feedme', 'template'
+		
+		import feedme
+		application.compiled_template_root = '/tmp/modu/feedme'
+		if not(os.path.exists(application.compiled_template_root)):
+			os.makedirs(application.compiled_template_root)
+		
+		application.activate('/assets', static.FileResource, pkg.resource_filename('modu.assets', ''))
+		
+		import feedme.itemdefs
+		application.activate('/admin', resource.AdminResource, default_path='admin/listing/page', itemdef_module=feedme.itemdefs)
+		
+		application.activate('/fck', fck.FCKEditorResource)
+		application.activate('/', index.Resource)
