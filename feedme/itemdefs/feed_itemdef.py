@@ -8,6 +8,8 @@ from modu import editable
 from modu.editable import define, util
 from modu.editable.datatypes import string, relational, boolean
 
+from feedme.util import checker
+
 __itemdef__ = define.itemdef(
 	__config			= dict(
 		name				= 'feed',
@@ -63,6 +65,11 @@ __itemdef__ = define.itemdef(
 	item_match			= string.TextAreaField(
 		label			= 'item match:',
 		weight			= 7,
+	),
+	
+	regex_check			= checker.RegexCheckerField(
+		label			= 'check regex:',
+		weight			= 7.5,
 	),
 	
 	user_link			= relational.ItemTitleField(

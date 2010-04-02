@@ -4,7 +4,7 @@
 # $Id$
 #
 
-import re, datetime
+import re, datetime, simplejson
 
 import PyRSS2Gen as rss
 
@@ -29,7 +29,7 @@ def default_filter(match):
 		guid		= match.group(4),
 	)
 
-def generate_feed(req, feed, filter_func=default_filter):
+def generate_xml_feed(req, feed, filter_func=default_filter):
 	text = feed.get_origin_page()
 	matches = get_feed_matches(text, feed.item_match)
 	return rss.RSS2(
@@ -38,4 +38,17 @@ def generate_feed(req, feed, filter_func=default_filter):
 		description = feed.description,
 		lastBuildDate = datetime.datetime.now(),
 		items = [get_feed_item(filter_func(x)) for x in matches]
-	)
+	).to_xml('UTF-8')
+
+def generate_json_test(pattern, text):
+	matches = get_feed_matches(text, pattern)
+	return simplejson.dumps(dict(
+		pattern	= pattern,
+		source	= text,
+		matches	= [
+			dict(
+				groups	= m.groups(),
+				named_groups = m.groupdict(),
+			) for m in matches
+		]
+	))
