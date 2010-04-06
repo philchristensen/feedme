@@ -10,7 +10,11 @@ import PyRSS2Gen as rss
 
 def get_feed_matches(text, pattern):
 	results = []
-	regex = re.compile(pattern, re.MULTILINE | re.DOTALL | re.IGNORECASE)
+	try:
+		regex = re.compile(pattern, re.MULTILINE | re.DOTALL | re.IGNORECASE)
+	except:
+		return results
+	
 	found = regex.search(text)
 	while(found):
 		results.append(found)

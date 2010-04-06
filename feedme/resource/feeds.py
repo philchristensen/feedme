@@ -4,6 +4,8 @@
 # $Id$
 #
 
+import urllib2
+
 from zope.interface import implements
 
 from modu.web import resource, app
@@ -30,14 +32,20 @@ class Resource(resource.Resource):
 			app.raise404()
 		
 		if(req.postpath[0] == 'test'):
+			url = req.data.get('url', None).value
 			pattern = req.data.get('pattern', None).value
-			text = req.data.get('text', None).value
 			
-			if not(text and pattern):
+			if not(url and pattern):
 				app.raise400('Missing parameters.')
 			
+			try:
+				result = urllib2.urlopen(url)
+			except Exception, e:
+				app.raise400('Invalid URL: %s' % e)
+			
+			text = result.read()
+			
 			self.content_type = "application/json; charset=UTF-8"
-			#self.content_type = 'text/plain'
 			self.content = feeder.generate_json_test(pattern, text)
 		else:
 			req.store.ensure_factory('feed', model_class=feed.Feed)

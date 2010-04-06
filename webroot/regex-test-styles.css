@@ -1,0 +1,26 @@
+#result-breakdown {
+	position: absolute;
+	top: 200px;
+	left: 600px;
+}
+
+.match {
+	counter-reset: total;
+}
+
+.match .group {
+	counter-increment: total 1; 
+}
+.match .group:before {
+	content: counter(total) ". ";
+	background-color: #fff;
+	font-weight: bold;
+}
+
+.group {
+	background-color: #b3d6ff;
+}
+
+.group:before {
+	content: counter
+}

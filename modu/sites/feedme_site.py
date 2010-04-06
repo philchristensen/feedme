@@ -17,6 +17,9 @@ from modu.editable.datatypes import fck
 
 from feedme.resource import index, feeds
 
+def admin_site_stylesheet_callback(req):
+	return req.get_path('regex-test-styles.css')
+
 class Site(object):
 	classProvides(plugin.IPlugin, app.ISite)
 	
@@ -24,6 +27,7 @@ class Site(object):
 		application.base_domain = 'localhost'
 		application.db_url = 'MySQLdb://feedme:jufGhosh@localhost/feedme'
 		application.template_dir = 'feedme', 'template'
+		application.admin_site_stylesheet = admin_site_stylesheet_callback
 		
 		import feedme
 		application.compiled_template_root = '/tmp/modu/feedme'

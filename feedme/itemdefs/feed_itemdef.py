@@ -72,6 +72,31 @@ __itemdef__ = define.itemdef(
 		weight			= 7.5,
 	),
 	
+	title_pattern		= string.StringField(
+		label			= 'title pattern',
+		weight			= 7.55,
+	),
+	
+	date_pattern		= string.StringField(
+		label			= 'date pattern in YYYY-MM-DD HH:MM format',
+		weight			= 7.6,
+	),
+	
+	link_pattern		= string.StringField(
+		label			= 'main URL pattern',
+		weight			= 7.7,
+	),
+	
+	img_pattern			= string.StringField(
+		label			= 'image URL pattern',
+		weight			= 7.8,
+	),
+	
+	body_pattern		= string.StringField(
+		label			= 'item body pattern',
+		weight			= 7.9,
+	),
+	
 	user_link			= relational.ItemTitleField(
 		column			= 'user_id',
 		label			= 'user link:',
