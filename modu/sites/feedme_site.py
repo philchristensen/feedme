@@ -25,8 +25,6 @@ class Site(object):
 	base_domain = 'localhost'
 	
 	def initialize(self, application):
-		os.environ['PYTHON_EGG_CACHE'] = '/var/cache/eggs'
-		
 		application.base_domain = self.base_domain
 		application.db_url = 'MySQLdb://feedme:jufGhosh@localhost/feedme'
 		application.template_dir = 'feedme', 'template'
