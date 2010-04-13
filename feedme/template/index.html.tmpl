@@ -8,7 +8,15 @@
 </head>
 <body>
 
-$content
+<h1>Feed Me Weird Things</h1>
+
+<h2>Available Feeds</h2>
+
+<ul>
+#for feed in $available_feeds
+	<li><a href="$req.get_path('feeds', $feed.url_code)">$feed.title</a> - <p>$feed.description</p></li>
+#end for
+</ul>
 
 </body>
 </html>

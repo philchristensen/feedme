@@ -4,22 +4,26 @@
 # $Id$
 #
 
-import urllib2
+import urllib2, simplejson, os.path
 
 from zope.interface import implements
 
 from modu.web import resource, app
 
 from feedme.model import feed
-from feedme.util import feeder
 
-def rss_filter(match):
-	return dict(
-		title		= match.group(1),
-		link		= match.group(2),
-		description	= match.group(3),
-		guid		= match.group(4),
-	)
+def generate_json_test(pattern, text):
+	matches = feed.get_feed_matches(text, pattern)
+	return simplejson.dumps(dict(
+		pattern	= pattern,
+		source	= text,
+		matches	= [
+			dict(
+				groups	= m.groups(),
+				named_groups = m.groupdict(),
+			) for m in matches
+		]
+	))
 
 class Resource(resource.Resource):
 	implements(resource.IContent)
@@ -43,10 +47,11 @@ class Resource(resource.Resource):
 			except Exception, e:
 				app.raise400('Invalid URL: %s' % e)
 			
-			text = result.read()
+			base_url = os.path.dirname(url)
+			text = feed.fix_urls(result.read(), base_url)
 			
 			self.content_type = "application/json; charset=UTF-8"
-			self.content = feeder.generate_json_test(pattern, text)
+			self.content = generate_json_test(pattern, text)
 		else:
 			req.store.ensure_factory('feed', model_class=feed.Feed)
 			f = req.store.load_one('feed', url_code=req.postpath[0])
@@ -54,7 +59,7 @@ class Resource(resource.Resource):
 				app.raise404()
 		
 			self.content_type = 'application/rss+xml; charset=UTF-8'
-			self.content = feeder.generate_feed(req, f, filter_func=rss_filter)
+			self.content = f.to_xml(req)
 		
 	def get_content(self, req):
 		"""
