@@ -55,6 +55,12 @@ __itemdef__ = define.itemdef(
 		weight			= 5,
 	),
 	
+	displays_ads		= boolean.CheckboxField(
+		label			= 'displays ads:',
+		default_checked	= True,
+		weight			= 5.5,
+	),
+	
 	origin_url			= string.StringField(
 		label			= 'origin url:',
 		size			= 60,
