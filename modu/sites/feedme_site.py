@@ -23,12 +23,15 @@ def admin_site_stylesheet_callback(req):
 class Site(object):
 	classProvides(plugin.IPlugin, app.ISite)
 	base_domain = 'localhost'
+	use_analytics = False
 	
 	def initialize(self, application):
 		application.base_domain = self.base_domain
 		application.db_url = 'MySQLdb://feedme:jufGhosh@localhost/feedme'
 		application.template_dir = 'feedme', 'template'
 		application.admin_site_stylesheet = admin_site_stylesheet_callback
+		
+		application.use_analytics = self.use_analytics
 		
 		import feedme
 		application.compiled_template_root = '/tmp/modu/feedme'
@@ -48,3 +51,4 @@ class Site(object):
 class LiveSite(Site):
 	classProvides(plugin.IPlugin, app.ISite)
 	base_domain = 'feedmeweirdthings.com'
+	use_analytics = True
