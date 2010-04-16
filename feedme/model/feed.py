@@ -46,15 +46,18 @@ def get_feed_matches(text, pattern):
 		found = regex.search(text, pos)
 	return results
 
+def fetch_rebased_url(url, base_url):
+	result = urllib2.urlopen(url)
+	text = result.read()
+	return fix_urls(text, base_url)
+
 class Feed(storable.Storable):
 	def __init__(self):
 		super(Feed, self).__init__('feed')
 	
 	def get_origin_page(self):
-		result = urllib2.urlopen(self.origin_url)
-		text = result.read()
 		base_url = os.path.dirname(self.origin_url)
-		return fix_urls(text, base_url)
+		return fetch_rebased_url(self.origin_url, base_url)
 	
 	def extract_items(self):
 		text = self.get_origin_page()
@@ -73,12 +76,16 @@ class Feed(storable.Storable):
 		)
 		return rss.RSSItem(**info)
 	
-	def to_xml(self, req):
+	def to_xml(self, req=None):
+		if(req is None):
+			link = 'feeds/%s' % self.url_code
+		else:
+			link = req.get_path('feeds', self.url_code)
 		text = self.get_origin_page()
 		matches = self.get_items()
 		return rss.RSS2(
 			title = self.title,
-			link = req.get_path('feeds', self.url_code),
+			link = link,
 			description = self.description,
 			lastBuildDate = datetime.datetime.now(),
 			items = matches,
